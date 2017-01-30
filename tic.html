@@ -1,0 +1,59 @@
+<!doctype html>
+
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <meta name="description" content="Tic Tac Toe game">
+  <meta name="author" content="Kevin Nolan">
+
+  <link href="https://fonts.googleapis.com/css?family=Catamaran" rel="stylesheet">
+  <!--
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  -->
+  <title>Tic Tac Toe</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Catamaran', sans-serif;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Tic Tac Toe</h1>
+<script>
+/*
+Always win or draw rules: assumes you play x
+?- priority. 
+
+1- If you have 2 x's lined up and a free space, put down an x (and win the game).
+3- If your opponent has 2 o's lined up and a free space, put down an x (and block them from winning).
+
+5- If board is empty pick a random corner
+5- If only marker in play is opponent's o and it's in a corner, put X in the center (you must do this to not lose)
+5- If only marker in play is opponent's o and it's in the center, put X into a random corner (this will force a draw unless your opponent makes a mistake and lets you get 3 in a row)
+
+5- If you have an x in a corner, there's an o in the center and no other counters present, put an x in the opposite corner.
+U- If you have an x in two corners and neither is blocked, put an X in another corner (and you will then be unbeatable). This is unnecessary as by this point of play the opponent will always have two markers lined up that you must defend against.
+5- If you have an X in a corner, there's one o in play but not in the center, put the X into a random other free corner as long as there's an empty space between them (at this point you will always win)
+
+7-If you have an X in play and two free spaces, put down an X so as to win with the third X.
+*/
+// Play tic-tac-toe against the computer
+// Game resets on win/lose so you can replay
+// Player can be O or X
+// Bonus: difficulty levels from easy to unbeatable
+
+</script>
+
+</body>
+
