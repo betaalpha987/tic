@@ -10,11 +10,11 @@
   <meta name="author" content="Kevin Nolan">
 
   <link href="https://fonts.googleapis.com/css?family=Catamaran" rel="stylesheet">
-  <!--
+
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-  -->
+
   <title>Tic Tac Toe</title>
 
   <style>
@@ -25,15 +25,37 @@
     body {
       font-family: 'Catamaran', sans-serif;
     }
+    .board-cell {
+      border:5px solid green;
+      background-color:#55ffff;
+      min-height: 100px; 
+    }
   </style>
 </head>
 <body>
+<div class="container">
+  <h1>Tic Tac Toe</h1>
 
-<h1>Tic Tac Toe</h1>
+  <div class="row">
+    <div class="col-xs-4 board-cell" id="TL"></div>
+    <div class="col-xs-4 board-cell" id="TM"></div>
+    <div class="col-xs-4 board-cell" id="TR"></div>
+  </div>
+  <div class="row">
+    <div class="col-xs-4 board-cell" id="ML"></div>
+    <div class="col-xs-4 board-cell" id="MM"></div>
+    <div class="col-xs-4 board-cell" id="MR"></div>
+  </div>
+  <div class="row">
+    <div class="col-xs-4 board-cell" id="BL"></div>
+    <div class="col-xs-4 board-cell" id="BM"></div>
+    <div class="col-xs-4 board-cell" id="BR"></div>
+  </div>
+</div>
+<!--For proper squaring of the board: http://stackoverflow.com/questions/26084770/bootstrap-css-how-to-set-a-divs-height-according-to-its-width-->
 <script>
 /*
-Always win or draw rules: assumes you play x
-?- priority. 
+Always win or draw rules: assumes you play x. In order of priority.
 
 1- If you have 2 x's lined up and a free space, put down an x (and win the game).
 3- If your opponent has 2 o's lined up and a free space, put down an x (and block them from winning).
@@ -52,7 +74,55 @@ U- If you have an x in two corners and neither is blocked, put an X in another c
 // Game resets on win/lose so you can replay
 // Player can be O or X
 // Bonus: difficulty levels from easy to unbeatable
+const board = [ ['c','c','c'],
+                ['c','c','c'],
+                ['c','c','c'] ]; // c=clear (neither x or o)
+let pMark = 'o'; // player's marker
+let cMark = 'x';
+const s = { // Regular expressions for scanning the board
+  xWin: /xxx/,
+  oWin: /ooo/,
+}
 
+board [0][2]='o'; board[1][1]='o'; board[2][0]='o';
+console.table(board);
+winCheck();
+
+function winCheck() {
+  scanLines(s.xWin);
+  scanLines(s.oWin);
+}
+
+function computerTurn() {
+  scanLines();
+  // cleck if 2 computer markers and a free space are lined up (to win the game)
+}
+
+
+function scanLines(rE) {
+  //Horizontal
+  for (i=0; i < 3; i++) {
+    let scan = board[i].reduce(function(acc,val) {
+      return acc + val;
+    },"");
+    if (rE.test(scan)) console.log("Row-Win! " + scan + ", " + i);
+  }
+  // Vertical
+    for (i=0; i < 3; i++) {
+    scan = board[0][i] + board[1][i] + board[2][i];
+    if (rE.test(scan)) console.log("Col-Win! " + scan + ", " + i);
+  }
+  // Diagonal
+    scan = board[0][0] + board[1][1] + board[2][2];
+    if (rE.test(scan)) console.log("DiagL-Win! " + scan + ", " + i);
+    scan = board[2][0] + board[1][1] + board[0][2];
+    if (rE.test(scan)) console.log("DiagR-Win! " + scan + ", " + i);
+
+
+
+    //Later, return a matrix of the three markers, eg. 00,01,02 or 00,11,22
+  
+}
 </script>
 
 </body>
