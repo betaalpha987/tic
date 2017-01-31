@@ -28,8 +28,12 @@
     .board-cell {
       border:5px solid green;
       background-color:#55ffff;
-      min-height: 100px; 
+      min-height: 100px;
+      color: white;
+      font-size: 4em;
+      text-align: center;
     }
+    
   </style>
 </head>
 <body>
@@ -74,27 +78,41 @@ U- If you have an x in two corners and neither is blocked, put an X in another c
 // Game resets on win/lose so you can replay
 // Player can be O or X
 // Bonus: difficulty levels from easy to unbeatable
+// Bonus: computer turn isn't instant
+
 const bCells = [[],[],[]]; // Where references to the board cells are
 const board = [ ['c','c','c'],
                 ['c','c','c'],
                 ['c','c','c'] ]; // c=clear (neither x or o)
 let pMark = 'o'; // player's marker
 let cMark = 'x';
+let turn='p';     // p=player, c=computer
 const s = { // Regular expressions for scanning the board
   xWin: /xxx/,
   oWin: /ooo/,
 }
 
-board [0][2]='o'; board[1][1]='o'; board[2][0]='o';
-console.table(board);
+//board [0][2]='o'; board[1][1]='x'; board[2][0]='x';
 getBoardCells();
 
-winCheck();
-
 function playerAct(row,col) {
-  // if it's player's turn and mark is in free spot...
-  board[row][col]=pMark;
-  bCells[row][col].innerHTML=pMark;
+  // Check space tapped on is clear and it's player's turn
+  if (board[row][col] =='c' && turn == 'p') {
+    markBoard(pMark,row,col)
+    winCheck();
+  }
+}
+
+function computerAct() {
+  //markBoard(cMark,0,2);
+  // check if 2 computer markers and a free space are lined up (to win the game)
+  winCheck();
+}
+
+
+function markBoard(mark,row,col) {
+  board[row][col]=mark;
+  bCells[row][col].innerHTML=mark;
 }
 
 function getBoardCells() {
@@ -106,29 +124,25 @@ function getBoardCells() {
 }
 
 function winCheck() {
-  let scan = scanLines(s.xWin);
-  if (scan) {
-    winner('x',scan);
-  }
-  scan = scanLines(s.oWin);
-  if (scan) {
-    winner('o',scan);
+  let xScan = scanLines(s.xWin);
+  let oScan = scanLines(s.oWin);
+  if (xScan) winner('x',xScan);
+  else if (oScan) winner('o',oScan);
+  else if (turn == 'p') {
+    turn = 'c';
+    computerAct();
+  } else {
+    turn = 'p';
   }
 }
 
 function winner(side,winArr) {
-  console.log(side,winArr);
   winArr.map(function(val,ind) {
     let cell = winArr[ind];
     bCells[cell[0]][cell[1]].style.backgroundColor="blue";
   });
+  console.log(side + " wins!")
 }
-
-function computerTurn() {
-  scanLines();
-  // cleck if 2 computer markers and a free space are lined up (to win the game)
-}
-
 
 function scanLines(rE) {
   //Horizontal
@@ -136,7 +150,7 @@ function scanLines(rE) {
     let scan = board[i].reduce(function(acc,val) {
       return acc + val;
     },"");
-    if (rE.test(scan)) return [[i,0],[i,1],[i,2]]; //console.log("Row-Win! " + scan + ", " + i);
+    if (rE.test(scan)) return [[i,0],[i,1],[i,2]]; 
   }
   // Vertical
   for (i=0; i < 3; i++) {
