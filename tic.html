@@ -102,22 +102,20 @@ function getBoardCells() {
 function winCheck() {
   let scan = scanLines(s.xWin);
   if (scan) {
-  console.log(scan);
     winner('x',scan);
   }
   scan = scanLines(s.oWin);
   if (scan) {
-  console.log(scan);
     winner('o',scan);
   }
 }
 
 function winner(side,winArr) {
-  //winArr[0][2].innerHTML = "sdfdsdsfsd";
-  //document.body.style.backgroundColor="blue";
-  //winArr.map(function (val) {
-  //  val.style.background-color="blue";
-  //});
+  console.log(side,winArr);
+  winArr.map(function(val,ind) {
+    let cell = winArr[ind];
+    bCells[cell[0]][cell[1]].style.backgroundColor="blue";
+  });
 }
 
 function computerTurn() {
