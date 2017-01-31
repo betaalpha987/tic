@@ -37,19 +37,19 @@
   <h1>Tic Tac Toe</h1>
 
   <div class="row">
-    <div class="col-xs-4 board-cell" id="TL"></div>
-    <div class="col-xs-4 board-cell" id="TM"></div>
-    <div class="col-xs-4 board-cell" id="TR"></div>
+    <div class="col-xs-4 board-cell" id="00"></div>
+    <div class="col-xs-4 board-cell" id="01"></div>
+    <div class="col-xs-4 board-cell" id="02"></div>
   </div>
   <div class="row">
-    <div class="col-xs-4 board-cell" id="ML"></div>
-    <div class="col-xs-4 board-cell" id="MM"></div>
-    <div class="col-xs-4 board-cell" id="MR"></div>
+    <div class="col-xs-4 board-cell" id="10"></div>
+    <div class="col-xs-4 board-cell" id="11"></div>
+    <div class="col-xs-4 board-cell" id="12"></div>
   </div>
   <div class="row">
-    <div class="col-xs-4 board-cell" id="BL"></div>
-    <div class="col-xs-4 board-cell" id="BM"></div>
-    <div class="col-xs-4 board-cell" id="BR"></div>
+    <div class="col-xs-4 board-cell" id="20"></div>
+    <div class="col-xs-4 board-cell" id="21"></div>
+    <div class="col-xs-4 board-cell" id="22"></div>
   </div>
 </div>
 <!--For proper squaring of the board: http://stackoverflow.com/questions/26084770/bootstrap-css-how-to-set-a-divs-height-according-to-its-width-->
@@ -74,6 +74,7 @@ U- If you have an x in two corners and neither is blocked, put an X in another c
 // Game resets on win/lose so you can replay
 // Player can be O or X
 // Bonus: difficulty levels from easy to unbeatable
+const bCells = [[],[],[]]; // Where references to the board cells are
 const board = [ ['c','c','c'],
                 ['c','c','c'],
                 ['c','c','c'] ]; // c=clear (neither x or o)
@@ -86,11 +87,37 @@ const s = { // Regular expressions for scanning the board
 
 board [0][2]='o'; board[1][1]='o'; board[2][0]='o';
 console.table(board);
+getBoardCells();
+
 winCheck();
 
+function getBoardCells() {
+  for (let i = 0; i < 3; i++) {
+    for (let j = 0; j < 3; j++) {
+      bCells[i][j] = document.getElementById(''+i+j);
+    }
+  }
+}
+
 function winCheck() {
-  scanLines(s.xWin);
-  scanLines(s.oWin);
+  let scan = scanLines(s.xWin);
+  if (scan) {
+  console.log(scan);
+    winner('x',scan);
+  }
+  scan = scanLines(s.oWin);
+  if (scan) {
+  console.log(scan);
+    winner('o',scan);
+  }
+}
+
+function winner(side,winArr) {
+  //winArr[0][2].innerHTML = "sdfdsdsfsd";
+  //document.body.style.backgroundColor="blue";
+  //winArr.map(function (val) {
+  //  val.style.background-color="blue";
+  //});
 }
 
 function computerTurn() {
@@ -105,23 +132,23 @@ function scanLines(rE) {
     let scan = board[i].reduce(function(acc,val) {
       return acc + val;
     },"");
-    if (rE.test(scan)) console.log("Row-Win! " + scan + ", " + i);
+    if (rE.test(scan)) return [[i,0],[i,1],[i,2]]; //console.log("Row-Win! " + scan + ", " + i);
   }
   // Vertical
-    for (i=0; i < 3; i++) {
+  for (i=0; i < 3; i++) {
     scan = board[0][i] + board[1][i] + board[2][i];
-    if (rE.test(scan)) console.log("Col-Win! " + scan + ", " + i);
+    if (rE.test(scan)) return [[0,i],[1,i],[2,i]]; // console.log("Col-Win! " + scan + ", " + i);
   }
   // Diagonal
-    scan = board[0][0] + board[1][1] + board[2][2];
-    if (rE.test(scan)) console.log("DiagL-Win! " + scan + ", " + i);
-    scan = board[2][0] + board[1][1] + board[0][2];
-    if (rE.test(scan)) console.log("DiagR-Win! " + scan + ", " + i);
+  scan = board[0][0] + board[1][1] + board[2][2];
+  if (rE.test(scan)) return [[0,0],[1,1],[2,2]]; // console.log("DiagL-Win! " + scan + ", " + i);
+  scan = board[2][0] + board[1][1] + board[0][2];
+  if (rE.test(scan)) return [[2,0],[1,1],[0,2]]; // console.log("DiagR-Win! " + scan + ", " + i);
 
 
 
     //Later, return a matrix of the three markers, eg. 00,01,02 or 00,11,22
-  
+  return null;
 }
 </script>
 
