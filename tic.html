@@ -33,12 +33,23 @@
       font-size: 4em;
       text-align: center;
     }
+    .choose-mark {
+      margin: 5px;
+      border-radius: 5px;
+      border: 1px solid blue;
+    }
     
   </style>
 </head>
 <body>
 <div class="container">
   <h1>Tic Tac Toe</h1>
+  <div class="row choose-mark" style="text-align:center">
+    You are: &nbsp;&nbsp;
+    <input type="radio" name="markChoice" checked onClick="setMarker('o')">O
+    &nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="radio" name="markChoice" onClick="setMarker('x')">X     
+  </div>
 
   <div class="row">
     <div class="col-xs-4 board-cell" id="00" onclick="playerAct(0,0)"></div>
@@ -63,29 +74,36 @@
 // Player can be O or X
 // Bonus: difficulty levels from easy to unbeatable
 // Bonus: computer turn isn't instant
+// Bonus: 2-player game
 
 const bCells = [[],[],[]]; // Where references to the board cells are
-const board = [ ['c','c','c'],
-                ['c','c','c'],
-                ['c','c','c'] ]; // c=clear (neither x or o)
-let pMark = 'o'; // player's marker
-let cMark = 'x';
-let turn='p';     // p=player, c=computer
+// Board contents: 0=clear. 1=P1 (the player). 2=P2 (the computer)
+// Using numbers allows the player to choose to be x or o.
+const board = [ [0,0,0],
+                [0,0,0],
+                [0,0,0] ];
+let p1Mark = 'o'; // P1 marker (player)
+let p2Mark = 'x';
+let turn=1;     // 1 = P1, 2 = P2
 const s = { // Regular expressions for scanning the board
-  xWin: /xxx/,
-  oWin: /ooo/,
-  clrCell: /c/,
-  xCell: /x/,
-  oCell: /o/
+  p1Win: /111/,
+  p2Win: /222/,
+  clrCell: /0/,
+  p1Cell: /1/,
+  p2Cell: /2/
 }
 
-//board [0][2]='o'; board[1][1]='x'; board[2][0]='x';
 getBoardCells();
+
+function setMarker(choice) {
+  if (choice == 'o') {p1Mark = 'o'; p2Mark = 'x';}
+  else               {p1Mark = 'x'; p2Mark = 'o';}
+}
 
 function playerAct(row,col) {
   // Check space tapped on is clear and it's player's turn
-  if (board[row][col] =='c' && turn == 'p') {
-    markBoard(pMark,row,col)
+  if (board[row][col] ==0 && turn == 1) {
+    markBoard(row,col)
     winCheck();
   }
 }
@@ -113,17 +131,19 @@ U- If you have an x in two corners and neither is blocked, put an X in another c
 
   // Pick random clear cell
   let scArr = scanBoard(s.clrCell);
-  let r = Math.floor(Math.random())*scArr.length;
-  markBoard(cMark,scArr[r][0],scArr[r][1]);
+  let r = Math.floor(Math.random()*scArr.length);
+  console.log(scArr,"Random= "+r);
+  markBoard(scArr[r][0],scArr[r][1]);
 
   //markBoard(cMark,0,2);
   winCheck();
 }
 
 
-function markBoard(mark,row,col) {
-  board[row][col]=mark;
-  bCells[row][col].innerHTML=mark;
+function markBoard(row,col) {
+  //console.log("turn : " + turn + ". row: "+row + ". col: "+col);
+  board[row][col]= turn; // Mark board with number of whose turn it is
+  bCells[row][col].innerHTML= (turn==1) ? p1Mark : p2Mark;
 }
 
 function getBoardCells() {
@@ -135,17 +155,17 @@ function getBoardCells() {
 }
 
 function winCheck() {
-  let xScan = scanLines(s.xWin);
-  let oScan = scanLines(s.oWin);
+  let p1Scan = scanLines(s.p1Win);
+  let p2Scan = scanLines(s.p2Win);
   let clScan = scanBoard(s.clrCell);
-  if (xScan) winner('x',xScan);
-  else if (oScan) winner('o',oScan);
+  if (p1Scan) winner(p1Mark,p1Scan);
+  else if (p2Scan) winner(p2Mark,p2Scan);
   else if (!clScan) console.log("We have a draw.");
-  else if (turn == 'p') {
-    turn = 'c';
+  else if (turn == 1) {
+    turn = 2;
     computerAct();
   } else {
-    turn = 'p';
+    turn = 1;
   }
 }
 
