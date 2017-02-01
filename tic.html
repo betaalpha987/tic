@@ -106,12 +106,17 @@ U- If you have an x in two corners and neither is blocked, put an X in another c
 5- If you have an X in a corner, there's one o in play but not in the center, put the X into a random other free corner as long as there's an empty space between them (at this point you will always win)
 
 7-If you have an X in play and two free spaces, put down an X so as to win with the third X.
-*/
+  */
 
+  // check if 2 comp marks and a free space are lined up (to win the game)
+  // check if 2 player marks and a free space are lined up (to block player win)
 
+  // Pick random clear cell
+  let scArr = scanBoard(s.clrCell);
+  let r = Math.floor(Math.random())*scArr.length;
+  markBoard(cMark,scArr[r][0],scArr[r][1]);
 
   //markBoard(cMark,0,2);
-  // check if 2 computer markers and a free space are lined up (to win the game)
   winCheck();
 }
 
@@ -133,7 +138,6 @@ function winCheck() {
   let xScan = scanLines(s.xWin);
   let oScan = scanLines(s.oWin);
   let clScan = scanBoard(s.clrCell);
-  console.log(clScan);
   if (xScan) winner('x',xScan);
   else if (oScan) winner('o',oScan);
   else if (!clScan) console.log("We have a draw.");
