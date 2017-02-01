@@ -33,7 +33,7 @@
       font-size: 4em;
       text-align: center;
     }
-    .choose-mark {
+    #choose-mark {
       margin: 5px;
       border-radius: 5px;
       border: 1px solid blue;
@@ -44,7 +44,7 @@
 <body>
 <div class="container">
   <h1>Tic Tac Toe</h1>
-  <div class="row choose-mark" style="text-align:center">
+  <div class="row" id="choose-mark" style="text-align:center">
     You are: &nbsp;&nbsp;
     <input type="radio" name="markChoice" checked onClick="setMarker('o')">O
     &nbsp;&nbsp;&nbsp;&nbsp;
@@ -103,6 +103,7 @@ function setMarker(choice) {
 function playerAct(row,col) {
   // Check space tapped on is clear and it's player's turn
   if (board[row][col] ==0 && turn == 1) {
+    disableChoice();
     markBoard(row,col)
     winCheck();
   }
@@ -139,11 +140,14 @@ U- If you have an x in two corners and neither is blocked, put an X in another c
   winCheck();
 }
 
-
 function markBoard(row,col) {
   //console.log("turn : " + turn + ". row: "+row + ". col: "+col);
   board[row][col]= turn; // Mark board with number of whose turn it is
   bCells[row][col].innerHTML= (turn==1) ? p1Mark : p2Mark;
+}
+
+function disableChoice() {
+  const ch = document.getElementById("choose-mark");
 }
 
 function getBoardCells() {
@@ -188,13 +192,13 @@ function scanLines(rE) {
   }
   // Vertical
   for (i=0; i < 3; i++) {
-    scan = board[0][i] + board[1][i] + board[2][i];
+    scan = "" + board[0][i] + board[1][i] + board[2][i];
     if (rE.test(scan)) return [[0,i],[1,i],[2,i]];
   }
   // Diagonal
-  scan = board[0][0] + board[1][1] + board[2][2];
+  scan = "" + board[0][0] + board[1][1] + board[2][2];
   if (rE.test(scan)) return [[0,0],[1,1],[2,2]];
-  scan = board[2][0] + board[1][1] + board[0][2];
+  scan = "" + board[2][0] + board[1][1] + board[0][2];
   if (rE.test(scan)) return [[2,0],[1,1],[0,2]];
   return null;
 }
