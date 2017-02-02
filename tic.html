@@ -185,12 +185,16 @@ U- If you have an x in two corners and neither is blocked, put an X in another c
       return;
     }
     let scanClrCorners = scanCells(corners,s.clrCell);
-    if (clrCellArr.length == 8 && scanClrCorners <= 3 && diff >=2){
-      // console.log ("Round 2 and player picked a corner. Going for center to avoid player forcing a win.");
+    //console.log(scanClrCorners.length);
+    if (clrCellArr.length == 8 && scanClrCorners.length <= 3 && diff >=2){
+      console.log ("Round 2 and player picked a corner. Mark center to avoid player forcing a win.");
+      markBoard(1,1);
+      return;
     }
     let scanCenter = scanCells([[1,1]],s.clrCell);
     if (clrCellArr.length == 7 && scanCenter && diff >=2) { 
-      // console.log("Round 3 and center is empty. Mark it. Should already have mark in corner to force a win.");
+      console.log("Round 3 and center is empty. Mark it. Should already have mark in corner to force a win.");
+      markBoard(1,1);
       return;
     }
     // Pick random clear cell
