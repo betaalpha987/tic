@@ -45,10 +45,21 @@
 <div class="container">
   <h1>Tic Tac Toe</h1>
   <div class="row" id="choose-mark" style="text-align:center">
-    You are: &nbsp;&nbsp;
-    <input type="radio" name="markChoice" checked onClick="setMarker('o')">O
-    &nbsp;&nbsp;&nbsp;&nbsp;
-    <input type="radio" name="markChoice" onClick="setMarker('x')">X     
+    <p>
+      You are: &nbsp;&nbsp;
+      <input type="radio" name="markChoice" checked onClick="setMarker('o')">O
+      &nbsp;&nbsp;&nbsp;&nbsp;
+      <input type="radio" name="markChoice" onClick="setMarker('x')">X
+    </p><p>
+      Difficulty: &nbsp;&nbsp;
+      <input type="radio" name="difficulty" onClick="diff = 0">Easy
+      &nbsp;&nbsp;&nbsp;&nbsp;
+      <input type="radio" name="difficulty" onClick="diff = 1">Medium
+      &nbsp;&nbsp;&nbsp;&nbsp;
+      <input type="radio" name="difficulty" checked onClick="diff = 2">Hard
+    </p><p>
+      <button onclick="resetBoard()">Reset</button>
+    </p>
   </div>
 
   <div class="row">
@@ -69,31 +80,48 @@
 </div>
 <!--For proper squaring of the board: http://stackoverflow.com/questions/26084770/bootstrap-css-how-to-set-a-divs-height-according-to-its-width-->
 <script>
-// Play tic-tac-toe against the computer
+// Play tic-tac-toe against the computer - DONE
 // Game resets on win/lose so you can replay
-// Player can be O or X
-// Bonus: difficulty levels from easy to unbeatable
+// Player can be O or X - DONE
+// Bugfix: disable marker choice when game starts
 // Bonus: computer turn isn't instant
 // Bonus: 2-player game
+// Bonus: randomize whose turn it is
 
 const bCells = [[],[],[]]; // Where references to the board cells are
 // Board contents: 0=clear. 1=P1 (the player). 2=P2 (the computer)
 // Using numbers allows the player to choose to be x or o.
-const board = [ [0,0,0],
-                [0,0,0],
-                [0,0,0] ];
+const board = [[0,0,0],
+               [0,0,0],
+               [0,0,0]];
+
 let p1Mark = 'o'; // P1 marker (player)
 let p2Mark = 'x';
+let diff = 3;
 let turn=1;     // 1 = P1, 2 = P2
 const s = { // Regular expressions for scanning the board
   p1Win: /111/,
   p2Win: /222/,
+  p1NrWin: /011|101|110/,
+  p2NrWin: /022|202|220/,
   clrCell: /0/,
   p1Cell: /1/,
   p2Cell: /2/
 }
 
 getBoardCells();
+
+function resetBoard() {
+  for (let i=0; i<3; i++) {
+    for (let j=0; j< 3; j++) {
+      board[i][j] = 0;
+      bCells[i][j].innerHTML = "";
+      bCells[i][j].style.backgroundColor="#55ffff";
+    }
+  }
+  turn=1;
+}
+
 
 function setMarker(choice) {
   if (choice == 'o') {p1Mark = 'o'; p2Mark = 'x';}
@@ -110,6 +138,7 @@ function playerAct(row,col) {
 }
 
 function computerAct() {
+  let scArr = [];
   /*
 Always win or draw rules: assumes you play x. In order of priority.
 
@@ -126,17 +155,24 @@ U- If you have an x in two corners and neither is blocked, put an X in another c
 
 7-If you have an X in play and two free spaces, put down an X so as to win with the third X.
   */
+  
+  p2NrWinArr = scanLines(s.p2NrWin);
+  p1NrWinArr = scanLines(s.p1NrWin);
+  clrCellArr = scanBoard(s.clrCell);
 
-  // check if 2 comp marks and a free space are lined up (to win the game)
-  // check if 2 player marks and a free space are lined up (to block player win)
-
-  // Pick random clear cell
-  let scArr = scanBoard(s.clrCell);
-  let r = Math.floor(Math.random()*scArr.length);
-  console.log(scArr,"Random= "+r);
-  markBoard(scArr[r][0],scArr[r][1]);
-
-  //markBoard(cMark,0,2);
+  if (p2NrWinArr && diff >= 1) {  // If 2 comp marks and a free space are lined up then win the game
+    console.log("Two of my markers lined up. Putting down last marker to win.")
+    let mark = scanCells(p2NrWinArr,s.clrCell);
+    markBoard(mark[0][0],mark[0][1]);
+  } else if (p1NrWinArr && diff >= 1) { // if 2 player marks and a free space are lined up then block player win
+    console.log("Two of opponont's markers lined up. Blocking.")
+    let mark = scanCells(p1NrWinArr,s.clrCell);
+    markBoard(mark[0][0],mark[0][1]);
+  } else {  // Pick random clear cell
+    let r = Math.floor(Math.random()*clrCellArr.length);
+    console.log(clrCellArr,"Random= "+r);
+    markBoard(clrCellArr[r][0],clrCellArr[r][1]);
+  }
   winCheck();
 }
 
@@ -210,6 +246,16 @@ function scanBoard(rE) {
     val.map (function(vl,j) {
       if (rE.test(vl)) resArr.push([i,j]);
     });
+  });
+  return (resArr.length == 0) ? null : resArr;
+}
+
+// Takes an array of cells, scans them for a given expression and returns all matches
+function scanCells(iArr, rE) { // eg. [[0,1],[1,2]]
+  let resArr=[];
+  iArr.map  (function(val,i) {
+    let cellR = val[0]; let cellC = val[1];
+    if (rE.test(board[cellR][cellC])) resArr.push ([cellR,cellC]);
   });
   return (resArr.length == 0) ? null : resArr;
 }
