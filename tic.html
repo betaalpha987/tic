@@ -108,8 +108,14 @@ const s = { // Regular expressions for scanning the board
   p1Cell: /1/,
   p2Cell: /2/
 }
-
 getBoardCells();
+randomTurn(); // 50% chance player goes first
+
+function randomTurn() {
+  turn = Math.ceil(Math.random()*2);
+  if (turn == 2) computerAct();
+  //Math.floor(Math.random()*clrCellArr.length);
+}
 
 function resetBoard() {
   for (let i=0; i<3; i++) {
@@ -119,7 +125,7 @@ function resetBoard() {
       bCells[i][j].style.backgroundColor="#55ffff";
     }
   }
-  turn=1;
+  randomTurn();
 }
 
 
@@ -155,24 +161,43 @@ U- If you have an x in two corners and neither is blocked, put an X in another c
 
 7-If you have an X in play and two free spaces, put down an X so as to win with the third X.
   */
-  
-  p2NrWinArr = scanLines(s.p2NrWin);
-  p1NrWinArr = scanLines(s.p1NrWin);
-  clrCellArr = scanBoard(s.clrCell);
-
-  if (p2NrWinArr && diff >= 1) {  // If 2 comp marks and a free space are lined up then win the game
-    console.log("Two of my markers lined up. Putting down last marker to win.")
-    let mark = scanCells(p2NrWinArr,s.clrCell);
-    markBoard(mark[0][0],mark[0][1]);
-  } else if (p1NrWinArr && diff >= 1) { // if 2 player marks and a free space are lined up then block player win
-    console.log("Two of opponont's markers lined up. Blocking.")
-    let mark = scanCells(p1NrWinArr,s.clrCell);
-    markBoard(mark[0][0],mark[0][1]);
-  } else {  // Pick random clear cell
+  (function() { // As soon as computer marks the board it leaves this IIFE to avoid doing more moves
+    let corners = [[0,0],[0,2],[2,0],[2,2]];
+    let p2NrWinArr = scanLines(s.p2NrWin);
+    if (p2NrWinArr && diff >= 1) {
+      console.log("Two of my markers lined up. Putting down last marker to win.")
+      let mark = scanCells(p2NrWinArr,s.clrCell);
+      markBoard(mark[0][0],mark[0][1]);
+      return;
+    }
+    let p1NrWinArr = scanLines(s.p1NrWin);
+    if (p1NrWinArr && diff >= 1) {
+      console.log("Two of opponont's markers lined up. Blocking.")
+      let mark = scanCells(p1NrWinArr,s.clrCell);
+      markBoard(mark[0][0],mark[0][1]);
+      return;
+    }
+    let clrCellArr = scanBoard(s.clrCell);
+    if (clrCellArr.length == 9 && diff >=2) {
+      console.log("Board empty. Marking a corner to set up a force win.");
+      let r = Math.floor(Math.random()*4);
+      markBoard(corners[r][0],corners[r][1]);
+      return;
+    }
+    let scanClrCorners = scanCells(corners,s.clrCell);
+    if (clrCellArr.length == 8 && scanClrCorners <= 3 && diff >=2){
+      // console.log ("Round 2 and player picked a corner. Going for center to avoid player forcing a win.");
+    }
+    let scanCenter = scanCells([[1,1]],s.clrCell);
+    if (clrCellArr.length == 7 && scanCenter && diff >=2) { 
+      // console.log("Round 3 and center is empty. Mark it. Should already have mark in corner to force a win.");
+      return;
+    }
+    // Pick random clear cell
     let r = Math.floor(Math.random()*clrCellArr.length);
     console.log(clrCellArr,"Random= "+r);
     markBoard(clrCellArr[r][0],clrCellArr[r][1]);
-  }
+  })();
   winCheck();
 }
 
