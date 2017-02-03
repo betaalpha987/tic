@@ -18,33 +18,60 @@
   <title>Tic Tac Toe</title>
 
   <style>
-    * {
-      box-sizing: border-box;
-    }
 
     body {
       font-family: 'Catamaran', sans-serif;
+      box-sizing: border-box;
     }
-    .board-cell {
-      border:5px solid green;
-      background-color:#55ffff;
-      min-height: 100px;
-      color: white;
-      font-size: 4em;
-      text-align: center;
+    .contain {
+      position: absolute;
+      height: 95vh;
+      width: 95vw;
+      max-height: 95vw;
+      max-width: 95vh;
+      min-width: 450px;
+      min-height: 450px;
+      transform:translate(2.5%, 2.5%);
     }
-    #choose-mark {
-      margin: 5px;
+    .options {
+      position:absolute;
+      top: 0%;
+      height: 20%;
+      width: 100%;
       border-radius: 5px;
       border: 1px solid blue;
+    }
+    .board {
+      position: absolute;
+      top:20%;
+      height: 80%;
+      width: 100%;
+    }
+    .board-cell {
+      position:absolute;
+      border:5px solid grey;
+      background-color:white;
+      width: 33.33%;
+      height: 33.33%;
+      color: black;
+      font-size: 4em;
+      margin:auto;
+    }
+    .marker {
+      position:absolute;
+      width: 80%;
+      height: 80%;
+      top:50%;
+      left:50%;
+      transform:translate(-50%, -50%);
     }
     
   </style>
 </head>
 <body>
-<div class="container">
-  <h1>Tic Tac Toe</h1>
-  <div class="row" id="choose-mark" style="text-align:center">
+<div class="contain">
+  <div class="options">
+    <h1>Tic Tac Toe</h1>
     <p>
       You are: &nbsp;&nbsp;
       <input type="radio" name="markChoice" checked onClick="setMarker('o')">O
@@ -61,24 +88,19 @@
       <button onclick="resetBoard()">Reset</button>
     </p>
   </div>
-
-  <div class="row">
-    <div class="col-xs-4 board-cell" id="00" onclick="playerAct(0,0)"></div>
-    <div class="col-xs-4 board-cell" id="01" onclick="playerAct(0,1)"></div>
-    <div class="col-xs-4 board-cell" id="02" onclick="playerAct(0,2)"></div>
-  </div>
-  <div class="row">
-    <div class="col-xs-4 board-cell" id="10" onclick="playerAct(1,0)"></div>
-    <div class="col-xs-4 board-cell" id="11" onclick="playerAct(1,1)"></div>
-    <div class="col-xs-4 board-cell" id="12" onclick="playerAct(1,2)"></div>
-  </div>
-  <div class="row">
-    <div class="col-xs-4 board-cell" id="20" onclick="playerAct(2,0)"></div>
-    <div class="col-xs-4 board-cell" id="21" onclick="playerAct(2,1)"></div>
-    <div class="col-xs-4 board-cell" id="22" onclick="playerAct(2,2)"></div>
+  <div class="board">
+    <div class="board-cell" id="00" onclick="playerAct(0,0)" style="top:0%; left: 0%;"><img src="images/nought.svg" class="marker"/></div>
+    <div class="board-cell" id="01" onclick="playerAct(0,1)" style="top:0%; left: 33.33%;"><img src="images/cross.svg" class="marker"/></div>
+    <div class="board-cell" id="02" onclick="playerAct(0,2)" style="top:0%; left: 66.66%;"></div>
+    <div class="board-cell" id="10" onclick="playerAct(1,0)" style="top:33.33%; left: 0%;"><img src="images/nought.svg" class="marker"/></div>
+    <div class="board-cell" id="11" onclick="playerAct(1,1)" style="top:33.33%; left: 33.33%;"></div>
+    <div class="board-cell" id="12" onclick="playerAct(1,2)" style="top:33.33%; left: 66.66%;"></div>
+    <div class="board-cell" id="20" onclick="playerAct(2,0)" style="top:66.66%; left: 0%;"></div>
+    <div class="board-cell" id="21" onclick="playerAct(2,1)" style="top:66.66%; left: 33.33%;"></div>
+    <div class="board-cell" id="22" onclick="playerAct(2,2)" style="top:66.66%; left: 66.66%;"></div>
   </div>
 </div>
-<!--For proper squaring of the board: http://stackoverflow.com/questions/26084770/bootstrap-css-how-to-set-a-divs-height-according-to-its-width-->
+
 <script>
 // Play tic-tac-toe against the computer - DONE
 // Game resets on win/lose so you can replay
