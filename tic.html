@@ -41,19 +41,23 @@
       left: 6%;
       height: 10%;
       width: 10%;
-
+      z-index: 40;
     }
-    .options-old {
+    #options-popup {
       position:absolute;
-      top: 0%;
-      height: 20%;
-      width: 100%;
-      max-height: 160px;
-      max-width: 800px;
-
-      border-radius: 5px;
-      border: 1px solid blue;
+      top: 25%;
+      left: 10%;
+      height: 50%;
+      width: 80%;
+      max-height: 400px;
+      max-width: 600px;
+      z-index: 50;
+      background: url("images/dialog.svg");
+      background-size: 100% 100%;
+      background-repeat: no-repeat;
+      display: none;
     }
+    
     .board {
       position: absolute;
       top:5%;
@@ -95,9 +99,9 @@
 
 <div class="contain">
   <div class="options">
-    <img src="images/options.svg" class="board-divider"/>
+    <input type = "image" name="image" src="images/options.svg" class="board-divider" onclick="displayOptions()"/>
   </div>
-  <div class="options-old">
+  <div id="options-popup">
     <h1>Tic Tac Toe</h1>
     <p>
       You are: &nbsp;&nbsp;
@@ -148,11 +152,11 @@ const oImg = '<img src="images/nought.svg" class="marker"/>';
 const xImg = '<img src="images/cross.svg" class="marker"/>';
 const wImg = '<img src="images/win_mark.svg" class="marker win"/>';
 
-
 let p1Mark = oImg; // P1 marker (player)
 let p2Mark = xImg;
 let diff = 3;
 let turn=1;     // 1 = P1, 2 = P2
+let optionsActive = false;
 const s = { // Regular expressions for scanning the board
   p1Win: /111/,
   p2Win: /222/,
@@ -188,11 +192,24 @@ function setMarker(choice) {
 }
 
 function playerAct(row,col) {
-  // Check space tapped on is clear and it's player's turn
-  if (board[row][col] ==0 && turn == 1) {
-    disableChoice();
+  // Check space, it's player's turn and no options screen on
+  if (board[row][col] ==0 && turn == 1 && !optionsActive) {
     markBoard(row,col)
     winCheck();
+  }
+}
+
+function displayOptions(showOpt) {
+  const optPopup = document.getElementById("options-popup");
+  if (showOpt === undefined) { // Toggle options
+    if (optionsActive) displayOptions(false);
+    else displayOptions(true);
+  } else if (showOpt == true) {
+    optPopup.style.display = "block";
+    optionsActive = true;
+  } else {
+    optPopup.style.display = "none";
+    optionsActive = false;
   }
 }
 
@@ -238,7 +255,6 @@ U- If you have an x in two corners and neither is blocked, put an X in another c
       return;
     }
     let scanClrCorners = scanCells(corners,s.clrCell);
-    //console.log(scanClrCorners.length);
     if (clrCellArr.length == 8 && scanClrCorners.length <= 3 && diff >=2){
       console.log ("Round 2 and player picked a corner. Mark center to avoid player forcing a win.");
       markBoard(1,1);
@@ -261,10 +277,6 @@ U- If you have an x in two corners and neither is blocked, put an X in another c
 function markBoard(row,col) {
   board[row][col]= turn; // Mark board with number of whose turn it is
   bCells[row][col].innerHTML= (turn==1) ? p1Mark : p2Mark;
-}
-
-function disableChoice() {
-  const ch = document.getElementById("choose-mark");
 }
 
 function getBoardCells() {
