@@ -23,6 +23,7 @@
       font-family: 'Catamaran', sans-serif;
       box-sizing: border-box;
     }
+
     .contain {
       position: absolute;
       height: 95vh;
@@ -35,13 +36,19 @@
       left:50%;
       transform:translate(-50%, -50%);
     }
-    .options {
+    .options-btn {
       position:absolute;
       top: 0%;
       left: 6%;
       height: 10%;
       width: 10%;
       z-index: 40;
+    }
+    .options-content {
+      position:relative;
+      top:30%;
+      left:50%;
+      transform:translate(-50%, -30%);
     }
     #options-popup {
       position:absolute;
@@ -56,8 +63,15 @@
       background-size: 100% 100%;
       background-repeat: no-repeat;
       display: none;
+      text-align: center;      
     }
-    
+    #go-reset-btn {
+      position:absolute;
+      bottom: 0%;
+      right: 0%;
+      z-index: 40;
+      display: none;
+    }
     .board {
       position: absolute;
       top:5%;
@@ -98,26 +112,30 @@
 <body>
 
 <div class="contain">
-  <div class="options">
+  <div class="options-btn">
     <input type = "image" name="image" src="images/options.svg" class="board-divider" onclick="displayOptions()"/>
   </div>
+  <button id="go-reset-btn" class="btn btn-info btn-lg" onclick="resetBoard(false)">Reset</button>
+
   <div id="options-popup">
-    <h1>Tic Tac Toe</h1>
-    <p>
-      You are: &nbsp;&nbsp;
-      <input type="radio" name="markChoice" checked onClick="setMarker('o')">O
-      &nbsp;&nbsp;&nbsp;&nbsp;
-      <input type="radio" name="markChoice" onClick="setMarker('x')">X
-    </p><p>
-      Difficulty: &nbsp;&nbsp;
-      <input type="radio" name="difficulty" onClick="diff = 0">Easy
-      &nbsp;&nbsp;&nbsp;&nbsp;
-      <input type="radio" name="difficulty" onClick="diff = 1">Medium
-      &nbsp;&nbsp;&nbsp;&nbsp;
-      <input type="radio" name="difficulty" checked onClick="diff = 2">Hard
-    </p><p>
-      <button onclick="resetBoard()">Reset</button>
-    </p>
+    <div class="options-content">
+      <h1>Tic Tac Toe</h1>
+      <p>
+        You are: &nbsp;&nbsp;
+        <input type="radio" name="markChoice" checked onClick="setMarker('o')">O
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <input type="radio" name="markChoice" onClick="setMarker('x')">X
+      </p><p>
+        Difficulty: &nbsp;&nbsp;
+        <input type="radio" name="difficulty" onClick="diff = 0">Easy
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <input type="radio" name="difficulty" onClick="diff = 1">Medium
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <input type="radio" name="difficulty" checked onClick="diff = 2">Hard
+      </p><p>
+        <button class="btn btn-info btn-sm" onclick="resetBoard(false)">Reset</button>
+      </p>
+    </div>
   </div>
   <div class="board">
     <img src="images/board.svg" class="board-divider"/>
@@ -166,6 +184,7 @@ const s = { // Regular expressions for scanning the board
   p1Cell: /1/,
   p2Cell: /2/
 }
+const goBtn = document.getElementById("go-reset-btn");
 getBoardCells();
 randomTurn(); // 50% chance player goes first
 
@@ -182,6 +201,8 @@ function resetBoard() {
       bCells[i][j].innerHTML = "";
     }
   }
+  displayOptions(false);
+  goBtn.style.display = "none";
   randomTurn();
 }
 
@@ -308,6 +329,7 @@ function winner(side,winArr) {
     bCells[cell[0]][cell[1]].innerHTML+=wImg;
   });
   console.log(side + " wins!")
+  goBtn.style.display = "block";
 }
 
 // Returns the cells in the first row line that matches the regExp, or null
